@@ -1,0 +1,7 @@
+build/
+DerivedData/
+*.xcworkspace
+.DS_Store
+node_modules/
+.env
+*.log
