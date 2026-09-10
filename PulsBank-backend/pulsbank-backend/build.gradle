@@ -1,29 +1,14 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.2.12'
-    id 'io.spring.dependency-management' version '1.1.6'
+    // Версии указываем ОДИН раз здесь, модули наследуют без версий
+    id 'org.springframework.boot' version '3.2.5' apply false
+    id 'io.spring.dependency-management' version '1.1.4' apply false
 }
 
-group = 'com.pulsbank'
-version = '1.0.0'
+allprojects {
+    group = 'com.pulsbank'
+    version = '0.0.1-SNAPSHOT'
 
-java {
-    sourceCompatibility = '17'
-    targetCompatibility = '17'
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        url = 'https://repo.maven.apache.org/maven2/'
+    repositories {
+        mavenCentral()
     }
-}
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }

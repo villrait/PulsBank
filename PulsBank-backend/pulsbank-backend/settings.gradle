@@ -1,1 +1,6 @@
 rootProject.name = 'pulsbank-backend'
+
+include 'common'
+include 'auth-service'
+include 'account-service'
+include 'transfer-service'
