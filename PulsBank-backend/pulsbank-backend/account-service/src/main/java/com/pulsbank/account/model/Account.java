@@ -1,13 +1,29 @@
 package com.pulsbank.account.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.math.BigDecimal;
 
 /**
- * Счёт пользователя.
+ * Банковский счёт пользователя. Хранится в таблице accounts базы account_db.
  */
+@Entity
+@Table(name = "accounts")
 public class Account {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
+
+    @Column(nullable = false)
     private BigDecimal balance;
 
     public Account() {
