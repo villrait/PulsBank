@@ -1,0 +1,15 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: transfer-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/transfer_db
+    username: pulsbank
+    password: pulsbank
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
