@@ -2,33 +2,36 @@ package com.pulsbank.transfer.service.impl;
 
 import com.pulsbank.transfer.dto.TransferResponse;
 import com.pulsbank.transfer.model.Transaction;
+import com.pulsbank.transfer.repository.TransactionRepository;
 import com.pulsbank.transfer.service.TransferService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * In-memory реализация TransferService (без БД).
+ * Реальная реализация TransferService: транзакции сохраняются в БД.
  *
- * <p>ВАЖНО: изоляция модулей — transfer-service не знает о классах account-service.
- * Поэтому в мок-режиме сервис держит собственные тестовые балансы.
- * TODO: в реальной реализации списание/зачисление будет идти через AccountClient
- * (HTTP-запросы к account-service), а транзакции храниться в БД.</p>
+ * ВАЖНО: балансы пока в памяти (мок), потому что HTTP-связей с account-service ещё нет.
+ * Позже (Вариант B) заменим мок-балансы на HTTP-вызовы к account-service.
  */
 @Service
-public class MockTransferService implements TransferService {
+@Transactional
+public class TransferServiceImpl implements TransferService {
 
     private static final BigDecimal INITIAL_BALANCE = new BigDecimal("1000.00");
 
+    private final TransactionRepository transactionRepository;
+
+    // Временный мок-баланс (позже заменим на HTTP-вызовы к account-service)
     private final Map<Long, BigDecimal> balancesByUserId = new HashMap<>();
-    private final AtomicLong idSequence = new AtomicLong(1);
-    private final List<Transaction> transactions = new ArrayList<>();
+
+    public TransferServiceImpl(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
 
     @Override
     public TransferResponse transfer(Long fromUserId, Long toUserId, BigDecimal amount) {
@@ -45,17 +48,17 @@ public class MockTransferService implements TransferService {
 
         BigDecimal newFromBalance = fromBalance.subtract(amount);
         BigDecimal newToBalance = toBalance.add(amount);
+
         balancesByUserId.put(fromUserId, newFromBalance);
         balancesByUserId.put(toUserId, newToBalance);
 
-        Transaction tx = new Transaction(
-                idSequence.getAndIncrement(),
-                fromUserId,
-                toUserId,
-                amount,
-                LocalDateTime.now()
-        );
-        transactions.add(tx);
+        // Сохраняем транзакцию в БД
+        Transaction tx = new Transaction();
+        tx.setFromUserId(fromUserId);
+        tx.setToUserId(toUserId);
+        tx.setAmount(amount);
+        tx.setTimestamp(LocalDateTime.now());
+        transactionRepository.save(tx);
 
         return new TransferResponse(true, "ok", newFromBalance);
     }

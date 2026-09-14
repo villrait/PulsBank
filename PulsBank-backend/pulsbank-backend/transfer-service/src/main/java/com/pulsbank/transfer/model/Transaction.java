@@ -1,16 +1,36 @@
 package com.pulsbank.transfer.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * Транзакция перевода между пользователями.
+ * Транзакция перевода между пользователями. Хранится в таблице transactions базы transfer_db.
  */
+@Entity
+@Table(name = "transactions")
 public class Transaction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "from_user_id", nullable = false)
     private Long fromUserId;
+
+    @Column(name = "to_user_id", nullable = false)
     private Long toUserId;
+
+    @Column(nullable = false)
     private BigDecimal amount;
+
+    @Column(nullable = false)
     private LocalDateTime timestamp;
 
     public Transaction() {
