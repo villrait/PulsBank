@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Эндпоинты регистрации и входа.
- *
- * <p>Пока без security/валидации/исключений — контроллер возвращает простой {@link AuthResponse}.</p>
+ * Регистрация и вход — по номеру телефона (как в реальных банках РФ).
  */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
     private final UserService userService;
 
     public AuthController(UserService userService) {
@@ -25,33 +25,29 @@ public class AuthController {
     }
 
     /**
-     * Регистрирует пользователя и создаёт ему счёт.
-     *
-     * <p>Создание счёта делегировано в мок-сервис (см. {@code MockUserService}).</p>
+     * Регистрирует клиента по номеру телефона и паролю.
      */
     @PostMapping("/register")
     public AuthResponse register(@RequestBody RegisterRequest request) {
-        User user = new User(null, request.getEmail(), request.getPassword());
+        User user = new User(null, request.getPhone(), request.getPassword());
         User saved = userService.save(user);
-        return new AuthResponse(saved.getId(), saved.getEmail(), "registered");
+        return new AuthResponse(saved.getId(), saved.getPhone(), "registered");
     }
 
     /**
-     * Проверяет email/password.
+     * Проверяет телефон/пароль.
      *
-     * <p>В случае ошибки намеренно не раскрываем, что именно неверно (email или пароль).</p>
+     * <p>В случае ошибки намеренно не раскрываем, что именно неверно (телефон или пароль).</p>
      */
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
-        User user = userService.findByEmail(request.getEmail());
+        User user = userService.findByPhone(request.getPhone());
         if (user == null) {
             return new AuthResponse(null, null, "invalid");
         }
-
         if (!user.getPassword().equals(request.getPassword())) {
             return new AuthResponse(null, null, "invalid");
         }
-
-        return new AuthResponse(user.getId(), user.getEmail(), "ok");
+        return new AuthResponse(user.getId(), user.getPhone(), "ok");
     }
 }

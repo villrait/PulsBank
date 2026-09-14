@@ -4,16 +4,17 @@ package com.pulsbank.auth.dto;
  * Ответ аутентификации (регистрация/вход).
  */
 public class AuthResponse {
+
     private Long userId;
-    private String email;
+    private String phone;
     private String message;
 
     public AuthResponse() {
     }
 
-    public AuthResponse(Long userId, String email, String message) {
+    public AuthResponse(Long userId, String phone, String message) {
         this.userId = userId;
-        this.email = email;
+        this.phone = phone;
         this.message = message;
     }
 
@@ -25,12 +26,12 @@ public class AuthResponse {
         this.userId = userId;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getMessage() {

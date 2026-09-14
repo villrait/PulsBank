@@ -8,7 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * Пользователь банка. Хранится в таблице users базы auth_db.
+ * Клиент банка. Хранится в таблице users базы auth_db.
+ * Главный идентификатор — номер телефона (как в реальных банках РФ).
  */
 @Entity
 @Table(name = "users")
@@ -19,7 +20,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String phone;
 
     @Column(nullable = false)
     private String password;
@@ -27,9 +28,9 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String email, String password) {
+    public User(Long id, String phone, String password) {
         this.id = id;
-        this.email = email;
+        this.phone = phone;
         this.password = password;
     }
 
@@ -41,12 +42,12 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {

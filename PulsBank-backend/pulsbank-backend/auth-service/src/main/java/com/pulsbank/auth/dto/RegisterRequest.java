@@ -1,26 +1,27 @@
 package com.pulsbank.auth.dto;
 
 /**
- * Запрос на регистрацию.
+ * Запрос на регистрацию: телефон + пароль.
  */
 public class RegisterRequest {
-    private String email;
+
+    private String phone;
     private String password;
 
     public RegisterRequest() {
     }
 
-    public RegisterRequest(String email, String password) {
-        this.email = email;
+    public RegisterRequest(String phone, String password) {
+        this.phone = phone;
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {

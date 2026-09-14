@@ -3,24 +3,23 @@ package com.pulsbank.auth.service;
 import com.pulsbank.auth.model.User;
 
 /**
- * Сервис работы с пользователями.
+ * Сервис работы с клиентами.
  */
 public interface UserService {
 
     /**
-     * Ищет пользователя по email.
+     * Ищет клиента по номеру телефона.
      *
-     * @param email email
-     * @return пользователь или null
+     * @param phone номер телефона
+     * @return клиент или null
      */
-    User findByEmail(String email);
+    User findByPhone(String phone);
 
     /**
-     * Сохраняет пользователя (при необходимости присваивает id).
+     * Сохраняет клиента (при необходимости присваивает id).
      *
-     * @param user пользователь
-     * @return сохранённый пользователь
+     * @param user клиент
+     * @return сохранённый клиент
      */
     User save(User user);
 }
-

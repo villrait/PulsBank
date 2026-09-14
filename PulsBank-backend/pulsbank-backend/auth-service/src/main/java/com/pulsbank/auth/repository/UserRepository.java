@@ -8,13 +8,12 @@ import java.util.Optional;
 
 /**
  * Репозиторий для работы с таблицей users.
- * Spring Data JPA сам создаёт реализацию этого интерфейса.
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * Найти пользователя по email.
+     * Найти клиента по номеру телефона.
      */
-    Optional<User> findByEmail(String email);
+    Optional<User> findByPhone(String phone);
 }
