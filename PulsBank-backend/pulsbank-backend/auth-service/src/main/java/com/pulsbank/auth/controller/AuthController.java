@@ -1,5 +1,6 @@
 package com.pulsbank.auth.controller;
 
+import com.pulsbank.auth.client.AccountClient;
 import com.pulsbank.auth.dto.AuthResponse;
 import com.pulsbank.auth.dto.LoginRequest;
 import com.pulsbank.auth.dto.RegisterRequest;
@@ -19,18 +20,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final AccountClient accountClient;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, AccountClient accountClient) {
         this.userService = userService;
+        this.accountClient = accountClient;
     }
 
     /**
      * Регистрирует клиента по номеру телефона и паролю.
+     * Автоматически открывает счёт через account-service.
      */
     @PostMapping("/register")
     public AuthResponse register(@RequestBody RegisterRequest request) {
         User user = new User(null, request.getPhone(), request.getPassword());
         User saved = userService.save(user);
+        
+        // Открываем счёт для нового клиента через account-service
+        accountClient.openAccount(saved.getId());
+        
         return new AuthResponse(saved.getId(), saved.getPhone(), "registered");
     }
 
