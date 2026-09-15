@@ -1,5 +1,6 @@
 package com.pulsbank.account.service.impl;
 
+import com.pulsbank.account.dto.TransferResult;
 import com.pulsbank.account.model.Account;
 import com.pulsbank.account.repository.AccountRepository;
 import com.pulsbank.account.service.AccountService;
@@ -41,26 +42,23 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    /**
-     * Возвращает (или создаёт) счёт пользователя.
-     * Используется внутренне для операций списания/зачисления.
-     */
-    public Account getOrCreateAccount(Long userId) {
-        return accountRepository.findByUserId(userId)
-                .orElseGet(() -> {
-                    Account account = new Account();
-                    account.setUserId(userId);
-                    account.setBalance(INITIAL_BALANCE);
-                    return accountRepository.save(account);
-                });
-    }
+    @Override
+    public TransferResult transferBetweenUsers(Long fromUserId, Long toUserId, BigDecimal amount) {
+        Account from = accountRepository.findByUserId(fromUserId).orElse(null);
+        Account to = accountRepository.findByUserId(toUserId).orElse(null);
 
-    /**
-     * Устанавливает новый баланс для пользователя.
-     */
-    public void setBalance(Long userId, BigDecimal newBalance) {
-        Account account = getOrCreateAccount(userId);
-        account.setBalance(newBalance);
-        accountRepository.save(account);
+        if (from == null || to == null) {
+            return new TransferResult(false, "account not found", null);
+        }
+        if (from.getBalance().compareTo(amount) < 0) {
+            return new TransferResult(false, "insufficient funds", from.getBalance());
+        }
+
+        from.setBalance(from.getBalance().subtract(amount));
+        to.setBalance(to.getBalance().add(amount));
+        accountRepository.save(from);
+        accountRepository.save(to);
+
+        return new TransferResult(true, "ok", from.getBalance());
     }
 }

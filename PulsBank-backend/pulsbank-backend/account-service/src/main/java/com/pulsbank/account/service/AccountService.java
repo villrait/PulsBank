@@ -1,5 +1,7 @@
 package com.pulsbank.account.service;
 
+import com.pulsbank.account.dto.TransferResult;
+
 import java.math.BigDecimal;
 
 /**
@@ -16,9 +18,19 @@ public interface AccountService {
     BigDecimal getBalance(Long userId);
 
     /**
-     * Создаёт счёт пользователю с балансом 1000.00, если его ещё нет.
+     * Создаёт счёт пользователю с начальным балансом, если его ещё нет.
      *
      * @param userId id пользователя
      */
     void createAccountForUser(Long userId);
+
+    /**
+     * Атомарно переводит сумму со счёта одного пользователя на счёт другого.
+     *
+     * @param fromUserId отправитель
+     * @param toUserId получатель
+     * @param amount сумма
+     * @return результат операции
+     */
+    TransferResult transferBetweenUsers(Long fromUserId, Long toUserId, BigDecimal amount);
 }
